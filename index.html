@@ -1,0 +1,65 @@
+<html>
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" integrity="sha384-xrRywqdh3PHs8keKZN+8zzc5TX0GRTLCcmivcbNJWm2rs5C8PRhcEn3czEjhAO9o" crossorigin="anonymous"></script> -->
+        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <style>
+            body {
+                margin-top: 30px;
+            }
+
+            .well {
+                border: 1px solid black;
+                background-color: green;
+                margin: 1rem;
+            }
+        </style>
+        <head>
+        <title>IO CHAT</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="well">
+                        <h3>Online Users</h3>
+                        <ul class="list-group" id="users">
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="chat" id="chat"></div>
+                    <form id="messageForm">
+                        <div class="form-group">
+                            <label>Enter Msg</label>
+                            <textarea name="" id="message" class="form-control"></textarea>
+                            <br>
+                            <input type="submit" value='Send Msg' class="btn btn-primary">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <script>
+            $(function(){
+                let socket = io.connect();
+                var $messageForm = $('#messageForm');
+                var $message = $('#message');
+                var $chat = $('#chat');
+
+
+                $messageForm.submit(function(e) {
+                    e.preventDefault()
+                    socket.emit('send message', $message.val());
+                    $message.val('');
+                })
+
+                socket.on('new message', function(data) {
+                    $chat.append('<div class="well">'+data.msg+'</div>');
+                })
+            })
+        </script>
+    </body>
+</html>
